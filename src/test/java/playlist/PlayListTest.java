@@ -10,8 +10,8 @@ public class PlayListTest extends BaseTests{
 	
 	@Test
 	public void testTocarMusica() {
-		homePage.escolherMusica("BLUESMAN (Filme Oficial)");
+		homePage.escolherMusica("bluesman (filme oficial)");
 		homePage.clicarNaMusica();
-		homePage.verificaFimDaMusica();
+		homePage.musicaRodando();
 	}
 }
