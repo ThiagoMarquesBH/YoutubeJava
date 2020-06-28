@@ -21,6 +21,7 @@ public class BaseTests {
 	
 	@BeforeEach
 	public void carregarPaginaInicial() {
+		driver.manage().window().maximize();
 		driver.get("https://www.youtube.com/");
 		homePage = new HomePage(driver);
 	}
