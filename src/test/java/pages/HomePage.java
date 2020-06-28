@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class HomePage {
 
@@ -16,7 +17,7 @@ public class HomePage {
 	private By clicarMusica = By.cssSelector("#contents > ytd-video-renderer:nth-child(1)");
 	private By anuncios = By.className("ytp-ad-skip-button-icon");
 	private By fimMusica = By.className("ytp-upnext-autoplay-icon");
-	ArrayList<String> listaMusica = new ArrayList();
+	ArrayList<String> listaMusica = new ArrayList<String>();
 
 	public HomePage(WebDriver driver) {
 		this.driver = driver;
@@ -36,11 +37,8 @@ public class HomePage {
 
 			this.clicarNaMusica();
 			this.pularAnuncios();
-
-			FluentWait wait = new FluentWait(driver).withTimeout(Duration.ofSeconds(600000))
-					.pollingEvery(Duration.ofSeconds(1)).ignoring(org.openqa.selenium.NoSuchElementException.class);
-			wait.until(ExpectedConditions.visibilityOfElementLocated(fimMusica));
-			driver.findElement(fimMusica);
+			this.verificaFim();
+			
 		}
 	}
 
@@ -53,10 +51,25 @@ public class HomePage {
 	}
 
 	public void pularAnuncios() {
-		FluentWait wait = new FluentWait(driver).withTimeout(Duration.ofSeconds(10)).pollingEvery(Duration.ofSeconds(1))
-				.ignoring(org.openqa.selenium.NoSuchElementException.class);
-		wait.until(ExpectedConditions.visibilityOfElementLocated(anuncios));
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, 10);
+			wait.until(ExpectedConditions.elementToBeClickable(anuncios));
 
-		driver.findElement(anuncios).click();
+			driver.findElement(anuncios).click();
+		} catch (Exception e) {
+			System.out.print("If resposta FALSE1");
+		}
+	}
+	
+	public void verificaFim() {
+		FluentWait waitFim = new FluentWait(driver).withTimeout(Duration.ofSeconds(600000))
+				.pollingEvery(Duration.ofSeconds(1)).ignoring(org.openqa.selenium.NoSuchElementException.class);
+		try {
+			waitFim.until(ExpectedConditions.visibilityOfElementLocated(anuncios));
+			driver.findElement(anuncios).click();
+		} catch (Exception e) {
+			waitFim.until(ExpectedConditions.visibilityOfElementLocated(fimMusica));
+			driver.findElement(fimMusica);
+		}
 	}
 }
